@@ -99,9 +99,21 @@ public class Crawler {
                     if(!listChaptersEle.isEmpty()) {
                         listChaptersEle.get(0).getElementsByClass("chapter-name").forEach(item -> {
                             String chapterUrl = Const.BASE_URL + item.select("a").attr("href");
-                            chapterDetails.add(crawlChapterDetail(chapterUrl));
                             try {
-                                Thread.sleep(700);
+                                chapterDetails.add(crawlChapterDetail(chapterUrl));
+                            } catch (Exception e){
+                                System.out.println("Eror in chapter "+ chapterUrl + ", retry...");
+                                e.printStackTrace();
+                                try {
+                                    Thread.sleep(Const.TIME_SLEEP);
+                                } catch (InterruptedException ex) {
+                                    ex.printStackTrace();
+                                }
+                                chapterDetails.add(crawlChapterDetail(chapterUrl));
+                            }
+
+                            try {
+                                Thread.sleep(Const.TIME_SLEEP);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -157,6 +169,7 @@ public class Crawler {
             e.printStackTrace();
         }
 
+        System.out.println("Done chapter " + cd.getChapterName());
         return cd;
     }
 
